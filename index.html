@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klinikum ↔ BBZ Weimar</title>
+<style>
+  :root{
+    --header-bg: #000000;
+    --header-fg: #ffffff;
+    --header-h: 140px;
+    --bg: #ffffff;
+    --ink: #000000;
+    --line: #000000;
+    --fs-base: 18px;
+  }
+  *{ box-sizing: border-box; }
+  html{ font-size: var(--fs-base); }
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+  }
+
+  header{
+    background: var(--header-bg);
+    color: var(--header-fg);
+    height: var(--header-h);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 0 1rem;
+    text-align:center;
+    transition: height .15s ease, background .15s ease;
+  }
+  h1{
+    margin:0;
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  .wrap{ max-width: 720px; margin: 0 auto; padding: 1.25rem 1.25rem 3rem; }
+
+  details.settings{
+    margin-bottom: 1.25rem;
+    border: 2px solid var(--line);
+  }
+  details.settings summary{
+    cursor:pointer;
+    padding: .7rem 1rem;
+    font-size: .95rem;
+    list-style:none;
+  }
+  details.settings summary::-webkit-details-marker{ display:none; }
+  .settings-grid{
+    padding: 0 1rem 1rem;
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px,1fr));
+    gap: .9rem;
+    border-top: 2px solid var(--line);
+    padding-top: 1rem;
+  }
+  .settings-grid label{
+    display:flex;
+    flex-direction:column;
+    gap: .35rem;
+    font-size: .8rem;
+  }
+  .settings-grid input[type=color]{
+    width: 100%;
+    height: 2.2rem;
+    border: 2px solid var(--line);
+    padding: 2px;
+    background: var(--bg);
+  }
+  .settings-grid input[type=range]{ width:100%; }
+
+  .tabs{
+    display:flex;
+    gap: .6rem;
+    margin-bottom: 1rem;
+  }
+  .tab{
+    flex:1;
+    text-align:center;
+    padding: .8rem .5rem;
+    border: 2px solid var(--line);
+    background: var(--bg);
+    color: var(--ink);
+    font-size: .95rem;
+    cursor:pointer;
+  }
+  .tab.active{
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  table{
+    width:100%;
+    border-collapse: collapse;
+    border: 2px solid var(--line);
+  }
+  thead th{
+    text-align:left;
+    font-size: .95rem;
+    padding: .7rem .8rem;
+    border-bottom: 2px solid var(--line);
+  }
+  tbody td{
+    padding: .6rem .8rem;
+    border-bottom: 1px solid var(--line);
+    font-size: 1.05rem;
+    font-variant-numeric: tabular-nums;
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Klinikum → BBZ Weimar</h1>
+</header>
+
+<div class="wrap">
+
+  <details class="settings">
+    <summary>Anpassen</summary>
+    <div class="settings-grid">
+      <label>Hintergrund
+        <input type="color" id="ctl-bg" value="#ffffff">
+      </label>
+      <label>Text
+        <input type="color" id="ctl-ink" value="#000000">
+      </label>
+      <label>Kopfleiste
+        <input type="color" id="ctl-header-bg" value="#000000">
+      </label>
+      <label>Kopfleiste Höhe
+        <input type="range" id="ctl-header-h" min="90" max="280" value="140">
+      </label>
+      <label>Textgröße
+        <input type="range" id="ctl-fs" min="14" max="22" value="18">
+      </label>
+    </div>
+  </details>
+
+  <div class="tabs">
+    <div class="tab active" data-dir="out">Klinikum → BBZ Weimar</div>
+    <div class="tab" data-dir="in">BBZ Weimar → Klinikum</div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Abfahrt</th>
+        <th>Ankunft</th>
+        <th>Fahrzeit</th>
+      </tr>
+    </thead>
+    <tbody id="table-body"></tbody>
+  </table>
+
+</div>
+
+<script>
+  const OUT = [
+    ["05:19","05:45"],["05:49","06:10"],["06:19","06:47"],["06:48","07:12"],
+    ["07:18","07:42"],["07:48","08:12"],["08:03","08:26"],["08:18","08:42"],
+    ["08:48","09:12"],["09:18","09:42"],["09:48","10:12"],["10:03","10:26"],
+    ["10:18","10:42"],["10:48","11:12"],["11:03","11:26"],["11:18","11:42"],
+    ["11:48","12:12"],["12:03","12:26"],["12:18","12:42"],["12:48","13:12"],
+    ["13:18","13:42"],["13:48","14:12"],["14:03","14:26"],["14:18","14:42"],
+    ["14:48","15:12"],["15:18","15:42"],["15:48","16:12"],["16:03","16:26"],
+    ["16:18","16:42"],["16:48","17:12"],["17:18","17:42"],["17:48","18:12"],
+    ["18:04","18:25"],["18:18","18:40"],["19:19","19:40"]
+  ];
+  const IN = [
+    ["05:23","05:45"],["05:35","05:52"],["05:53","06:15"],["06:22","06:47"],
+    ["06:52","07:17"],["07:22","07:47"],["07:36","07:58"],["07:52","08:17"],
+    ["08:22","08:47"],["08:36","08:58"],["08:52","09:17"],["09:22","09:47"],
+    ["09:52","10:17"],["10:22","10:47"],["10:35","10:59"],["10:52","11:17"],
+    ["11:22","11:47"],["11:52","12:17"],["12:22","12:47"],["12:35","12:59"],
+    ["12:52","13:17"],["13:22","13:47"],["13:52","14:17"],["14:22","14:47"],
+    ["14:35","14:59"],["14:52","15:17"],["15:22","15:47"],["15:52","16:17"],
+    ["16:22","16:47"],["16:35","16:59"],["16:52","17:17"],["17:22","17:47"],
+    ["17:52","18:17"],["18:22","18:47"],["18:46","19:08"]
+  ];
+
+  const toMin = t => { const [h,m] = t.split(":").map(Number); return h*60+m; };
+  const h1 = document.querySelector("h1");
+  const tbody = document.getElementById("table-body");
+  let currentDir = "out";
+
+  function render(){
+    const data = currentDir === "out" ? OUT : IN;
+    h1.textContent = currentDir === "out" ? "Klinikum → BBZ Weimar" : "BBZ Weimar → Klinikum";
+    tbody.innerHTML = "";
+    data.forEach(([dep,arr]) => {
+      const dur = toMin(arr) - toMin(dep);
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${dep}</td><td>${arr}</td><td>${dur} Min</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+      currentDir = tab.dataset.dir;
+      render();
+    });
+  });
+
+  const root = document.documentElement.style;
+  const bind = (id, cssVar, unit="") => {
+    const el = document.getElementById(id);
+    el.addEventListener("input", () => root.setProperty(cssVar, el.value + unit));
+  };
+  bind("ctl-bg", "--bg");
+  bind("ctl-ink", "--ink");
+  bind("ctl-header-bg", "--header-bg");
+  bind("ctl-header-h", "--header-h", "px");
+  bind("ctl-fs", "--fs-base", "px");
+
+  render();
+</script>
+
+</body>
+</html>
