@@ -7,143 +7,359 @@
 <title>Klinikum → BBZ Weimar</title>
 
 <style>
+
+/* =========================================================
+   =================== CUSTOMIZE HERE ======================
+   ========================================================= */
+
+/* ---------- COLORS ---------- */
+
+:root{
+
+  /* Main page */
+  --bg-color: #FFFFFF;
+  --text-color: #000000;
+
+  /* Main header */
+  --header-bg: #000000;
+  --header-text: #FFFFFF;
+
+  /* Table */
+  --table-border: #000000;
+  --table-header-bg: #FFFFFF;
+  --table-header-text: #000000;
+  --table-row-bg: #FFFFFF;
+  --table-row-text: #000000;
+
+  /* NEXT departure */
+  --next-bg: #000000;
+  --next-text: #FFFFFF;
+
+
+  /* ---------- HEADER SIZES ---------- */
+
+  /* Height of black header */
+  --header-height: 70px;
+
+  /* Main header text size */
+  --header-text-size: 34px;
+
+
+  /* ---------- PAGE SPACING ---------- */
+
+  /* Space between header and table */
+  --space-after-header: 8px;
+
+  /* Left/right page spacing */
+  --page-padding: 20px;
+
+  /* Maximum table width */
+  --max-width: 720px;
+
+
+  /* ---------- TABLE TEXT SIZES ---------- */
+
+  /* "Abfahrt / Ankunft / Fahrzeit" */
+  --table-header-text-size: 20px;
+
+  /* Departure / arrival / duration */
+  --table-text-size: 24px;
+
+  /* Date shown underneath tomorrow's departure */
+  --next-day-text-size: 15px;
+
+
+  /* ---------- TABLE SPACING ---------- */
+
+  /* Height / vertical space inside table rows */
+  --table-cell-padding-top: 10px;
+  --table-cell-padding-bottom: 10px;
+
+  /* Left/right space inside cells */
+  --table-cell-padding-left: 12px;
+  --table-cell-padding-right: 12px;
+
+
+  /* ---------- TABLE BORDERS ---------- */
+
+  /* Outer table border */
+  --table-border-width: 2px;
+
+  /* Row separator */
+  --row-border-width: 1px;
+
+
+  /* ---------- NUMBER OF DEPARTURES ---------- */
+
+  /*
+     Change this number to show more or fewer buses.
+
+     Example:
+     5  = next 5 buses
+     8  = next 8 buses
+     12 = next 12 buses
+     20 = next 20 buses
+  */
+
+  --number-of-departures: 8;
+
+}
+
+
+/* =========================================================
+   ================= END CUSTOMIZE HERE ====================
+   ========================================================= */
+
+
+*{
+  box-sizing:border-box;
+}
+
+
+html,
+body{
+  margin:0;
+  padding:0;
+}
+
+
+body{
+  background:var(--bg-color);
+  color:var(--text-color);
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-weight:700;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+header{
+
+  background:var(--header-bg);
+  color:var(--header-text);
+
+  height:var(--header-height);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  text-align:center;
+
+  padding:0 10px;
+
+}
+
+
+h1{
+
+  margin:0;
+
+  font-size:var(--header-text-size);
+
+  font-weight:800;
+
+  line-height:1.1;
+
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+.wrap{
+
+  width:100%;
+
+  max-width:var(--max-width);
+
+  margin:0 auto;
+
+  padding-left:var(--page-padding);
+
+  padding-right:var(--page-padding);
+
+  padding-top:var(--space-after-header);
+
+  padding-bottom:20px;
+
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+table{
+
+  width:100%;
+
+  border-collapse:collapse;
+
+  border:
+    var(--table-border-width)
+    solid
+    var(--table-border);
+
+}
+
+
+/* ---------- TABLE HEADER ---------- */
+
+thead{
+
+  background:var(--table-header-bg);
+
+  color:var(--table-header-text);
+
+}
+
+
+thead th{
+
+  text-align:left;
+
+  font-size:var(--table-header-text-size);
+
+  font-weight:800;
+
+  padding-top:var(--table-cell-padding-top);
+
+  padding-bottom:var(--table-cell-padding-bottom);
+
+  padding-left:var(--table-cell-padding-left);
+
+  padding-right:var(--table-cell-padding-right);
+
+  border-bottom:
+    var(--table-border-width)
+    solid
+    var(--table-border);
+
+}
+
+
+/* ---------- TABLE ROWS ---------- */
+
+tbody{
+
+  background:var(--table-row-bg);
+
+  color:var(--table-row-text);
+
+}
+
+
+tbody td{
+
+  padding-top:var(--table-cell-padding-top);
+
+  padding-bottom:var(--table-cell-padding-bottom);
+
+  padding-left:var(--table-cell-padding-left);
+
+  padding-right:var(--table-cell-padding-right);
+
+  border-bottom:
+    var(--row-border-width)
+    solid
+    var(--table-border);
+
+  font-size:var(--table-text-size);
+
+  font-weight:700;
+
+  font-variant-numeric:tabular-nums;
+
+}
+
+
+/* Remove final line */
+
+tbody tr:last-child td{
+
+  border-bottom:none;
+
+}
+
+
+/* =========================================================
+   NEXT DEPARTURE
+   ========================================================= */
+
+tbody tr.next-departure{
+
+  background:var(--next-bg);
+
+  color:var(--next-text);
+
+}
+
+
+/* =========================================================
+   TOMORROW / FOLLOWING DAY
+   ========================================================= */
+
+.next-day{
+
+  font-size:var(--next-day-text-size);
+
+  font-weight:700;
+
+  line-height:1.1;
+
+}
+
+
+/* =========================================================
+   NO DEPARTURES
+   ========================================================= */
+
+.no-departures{
+
+  text-align:center;
+
+  padding:
+    var(--table-cell-padding-top)
+    var(--table-cell-padding-left)
+    var(--table-cell-padding-bottom)
+    var(--table-cell-padding-right);
+
+  font-size:var(--table-text-size);
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media(max-width:600px){
+
   :root{
-    --header-bg:#000000;
-    --header-fg:#ffffff;
-    --header-h:140px;
 
-    --bg:#ffffff;
-    --ink:#000000;
-    --line:#000000;
+    --header-text-size:28px;
 
-    --fs-base:18px;
+    --table-header-text-size:17px;
+
+    --table-text-size:20px;
+
+    --next-day-text-size:13px;
+
+    --page-padding:10px;
+
   }
 
-  *{
-    box-sizing:border-box;
-  }
+}
 
-  html{
-    font-size:var(--fs-base);
-  }
-
-  body{
-    margin:0;
-    background:var(--bg);
-    color:var(--ink);
-    font-family:Arial,Helvetica,sans-serif;
-    font-weight:700;
-  }
-
-  header{
-    background:var(--header-bg);
-    color:var(--header-fg);
-    height:var(--header-h);
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    padding:0 1rem;
-    text-align:center;
-  }
-
-  h1{
-    margin:0;
-    font-size:clamp(1.4rem,4vw,2.2rem);
-    font-weight:800;
-    letter-spacing:-0.01em;
-  }
-
-  .wrap{
-    max-width:720px;
-    margin:0 auto;
-    padding:1.25rem 1.25rem 3rem;
-  }
-
-  details.settings{
-    margin-bottom:1.25rem;
-    border:2px solid var(--line);
-  }
-
-  details.settings summary{
-    cursor:pointer;
-    padding:.7rem 1rem;
-    font-size:.95rem;
-    list-style:none;
-  }
-
-  details.settings summary::-webkit-details-marker{
-    display:none;
-  }
-
-  .settings-grid{
-    padding:1rem;
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-    gap:.9rem;
-    border-top:2px solid var(--line);
-  }
-
-  .settings-grid label{
-    display:flex;
-    flex-direction:column;
-    gap:.35rem;
-    font-size:.8rem;
-  }
-
-  .settings-grid input[type=color]{
-    width:100%;
-    height:2.2rem;
-    border:2px solid var(--line);
-    padding:2px;
-    background:var(--bg);
-  }
-
-  .settings-grid input[type=range]{
-    width:100%;
-  }
-
-  table{
-    width:100%;
-    border-collapse:collapse;
-    border:2px solid var(--line);
-  }
-
-  thead th{
-    text-align:left;
-    font-size:.95rem;
-    padding:.7rem .8rem;
-    border-bottom:2px solid var(--line);
-  }
-
-  tbody td{
-    padding:.6rem .8rem;
-    border-bottom:1px solid var(--line);
-    font-size:1.05rem;
-    font-variant-numeric:tabular-nums;
-  }
-
-  tbody tr:last-child td{
-    border-bottom:none;
-  }
-
-  /* First / next departure */
-  tbody tr.next-departure{
-    background:var(--ink);
-    color:var(--bg);
-  }
-
-  /* Date shown for departures from another day */
-  .next-day{
-    font-size:.85em;
-    font-weight:700;
-  }
-
-  .no-departures{
-    text-align:center;
-    padding:1rem;
-  }
 </style>
 
 </head>
@@ -151,88 +367,27 @@
 <body>
 
 <header>
+
   <h1>Klinikum → BBZ Weimar</h1>
+
 </header>
 
 <div class="wrap">
 
-  <details class="settings">
-    <summary>Einstellungen</summary>
-
-<div class="settings-grid">
-
-  <label>
-    Hintergrund
-    <input
-      type="color"
-      id="ctl-bg"
-      value="#ffffff"
-    >
-  </label>
-
-  <label>
-    Text
-    <input
-      type="color"
-      id="ctl-ink"
-      value="#000000"
-    >
-  </label>
-
-  <label>
-    Kopfleiste
-    <input
-      type="color"
-      id="ctl-header-bg"
-      value="#000000"
-    >
-  </label>
-
-  <label>
-    Kopfleiste Höhe
-    <input
-      type="range"
-      id="ctl-header-h"
-      min="60"
-      max="280"
-      value="140"
-    >
-  </label>
-
-  <label>
-    Textgröße
-    <input
-      type="range"
-      id="ctl-fs"
-      min="14"
-      max="30"
-      value="18"
-    >
-  </label>
-
-  <label>
-    Anzahl Abfahrten
-    <input
-      type="range"
-      id="ctl-count"
-      min="1"
-      max="20"
-      value="8"
-    >
-  </label>
-
-</div>
-
-  </details>
-
   <table>
 
 <thead>
+
   <tr>
+
     <th>Abfahrt</th>
+
     <th>Ankunft</th>
+
     <th>Fahrzeit</th>
+
   </tr>
+
 </thead>
 
 <tbody id="table-body"></tbody>
@@ -243,10 +398,10 @@
 
 <script>
 
-/* ======================================================
+/* =========================================================
    FAHRPLAN
    Klinikum → BBZ Weimar
-   ====================================================== */
+   ========================================================= */
 
 const OUT = [
 
@@ -302,61 +457,84 @@ const OUT = [
 ];
 
 
-/* ======================================================
-   SETTINGS
-   ====================================================== */
+/* =========================================================
+   NUMBER OF DEPARTURES
+   ========================================================= */
+
+/*
+   Change this number if you want a different amount.
+
+   8 = eight upcoming buses
+*/
 
 let numberOfDepartures = 8;
 
 
-/* ======================================================
-   CONVERT HH:MM → MINUTES
-   ====================================================== */
+/* =========================================================
+   TIME CONVERSION
+   ========================================================= */
 
 function toMin(time){
 
-  const [h,m] = time.split(":").map(Number);
+  const [h,m] =
+    time.split(":").map(Number);
 
   return h * 60 + m;
 
 }
 
 
-/* ======================================================
-   GET CURRENT EUROPE/BERLIN TIME
-   ====================================================== */
+/* =========================================================
+   CURRENT EUROPE / BERLIN DATE + TIME
+   ========================================================= */
 
 function getBerlinDateTime(){
 
   const now = new Date();
 
-  const formatter = new Intl.DateTimeFormat(
-    "en-CA",
-    {
-      timeZone:"Europe/Berlin",
-      year:"numeric",
-      month:"2-digit",
-      day:"2-digit",
-      hour:"2-digit",
-      minute:"2-digit",
-      second:"2-digit",
-      hourCycle:"h23"
-    }
-  );
+  const formatter =
+    new Intl.DateTimeFormat(
+      "en-CA",
+      {
+        timeZone:"Europe/Berlin",
 
-  const parts = formatter.formatToParts(now);
+        year:"numeric",
+        month:"2-digit",
+        day:"2-digit",
+
+        hour:"2-digit",
+        minute:"2-digit",
+        second:"2-digit",
+
+        hourCycle:"h23"
+      }
+    );
+
+
+  const parts =
+    formatter.formatToParts(now);
+
 
   const get = type =>
-    Number(parts.find(p => p.type === type).value);
+    Number(
+      parts.find(
+        p => p.type === type
+      ).value
+    );
+
 
   return {
 
     year:get("year"),
+
     month:get("month"),
+
     day:get("day"),
 
     hour:get("hour"),
+
     minute:get("minute"),
+
     second:get("second")
 
   };
@@ -364,9 +542,9 @@ function getBerlinDateTime(){
 }
 
 
-/* ======================================================
-   FORMAT DATE
-   ====================================================== */
+/* =========================================================
+   DATE DISPLAY
+   ========================================================= */
 
 function formatDate(date){
 
@@ -374,8 +552,11 @@ function formatDate(date){
     "de-DE",
     {
       timeZone:"Europe/Berlin",
+
       weekday:"short",
+
       day:"2-digit",
+
       month:"2-digit"
     }
   ).format(date);
@@ -383,114 +564,117 @@ function formatDate(date){
 }
 
 
-/* ======================================================
-   GET UPCOMING DEPARTURES
-   FROM TODAY AND FOLLOWING DAYS
-   ====================================================== */
+/* =========================================================
+   GET UPCOMING BUSES
+   ========================================================= */
 
 function getUpcomingDepartures(){
 
-  const berlin = getBerlinDateTime();
+  const berlin =
+    getBerlinDateTime();
+
 
   const nowMinutes =
-    berlin.hour * 60 + berlin.minute;
+    berlin.hour * 60 +
+    berlin.minute;
 
 
   /*
-     Create a real date representing today's date
-     in the browser environment.
+     Create today's Berlin calendar date.
   */
 
-  const today = new Date();
-
-  /*
-     Force the displayed calendar date to the
-     Europe/Berlin date.
-  */
-
-  const todayDate = new Date(
-    berlin.year,
-    berlin.month - 1,
-    berlin.day
-  );
+  const today =
+    new Date(
+      berlin.year,
+      berlin.month - 1,
+      berlin.day
+    );
 
 
   const result = [];
 
 
   /*
-     Look through today + following days.
+     Look through today and the next 30 days.
 
-     0 = today
-     1 = tomorrow
-     2 = day after tomorrow
-     etc.
-
-     We continue until we have enough departures.
+     This means that if there are only 4 buses
+     remaining today, the remaining requested
+     buses automatically come from tomorrow.
   */
 
-  for(let dayOffset = 0; dayOffset < 30; dayOffset++){
+  for(
+    let dayOffset = 0;
+    dayOffset < 30;
+    dayOffset++
+  ){
 
-    if(result.length >= numberOfDepartures){
+    if(
+      result.length >=
+      numberOfDepartures
+    ){
       break;
     }
 
 
-    const date = new Date(todayDate);
+    const date =
+      new Date(today);
+
 
     date.setDate(
-      date.getDate() + dayOffset
+      date.getDate() +
+      dayOffset
     );
 
 
     const dateLabel =
-      formatDate(
-        new Date(
-          date.getFullYear(),
-          date.getMonth(),
-          date.getDate(),
-          12,
-          0,
-          0
-        )
-      );
+      formatDate(date);
 
 
-    OUT.forEach(([dep,arr]) => {
+    OUT.forEach(
+      ([dep,arr]) => {
 
-      /*
-         On TODAY only show buses that haven't
-         departed yet.
-      */
 
-      if(
-        dayOffset === 0 &&
-        toMin(dep) < nowMinutes
-      ){
-        return;
+        /*
+           TODAY:
+
+           Ignore buses that already departed.
+        */
+
+        if(
+          dayOffset === 0 &&
+          toMin(dep) < nowMinutes
+        ){
+
+          return;
+
+        }
+
+
+        /*
+           Calculate journey duration.
+        */
+
+        const duration =
+          toMin(arr) -
+          toMin(dep);
+
+
+        result.push({
+
+          dep:dep,
+
+          arr:arr,
+
+          duration:duration,
+
+          dayOffset:dayOffset,
+
+          dateLabel:dateLabel
+
+        });
+
       }
-
-
-      /*
-         Calculate journey time.
-      */
-
-      const duration =
-        toMin(arr) - toMin(dep);
-
-
-      result.push({
-
-        dep:dep,
-        arr:arr,
-        duration:duration,
-
-        dayOffset:dayOffset,
-        dateLabel:dateLabel
-
-      });
-
-    });
+    );
 
   }
 
@@ -503,14 +687,17 @@ function getUpcomingDepartures(){
 }
 
 
-/* ======================================================
-   RENDER TABLE
-   ====================================================== */
+/* =========================================================
+   DISPLAY TABLE
+   ========================================================= */
 
 function render(){
 
   const tbody =
-    document.getElementById("table-body");
+    document.getElementById(
+      "table-body"
+    );
+
 
   tbody.innerHTML = "";
 
@@ -519,16 +706,25 @@ function render(){
     getUpcomingDepartures();
 
 
-  if(upcoming.length === 0){
+  if(
+    upcoming.length === 0
+  ){
 
     const tr =
       document.createElement("tr");
 
+
     tr.innerHTML = `
-      <td colspan="3" class="no-departures">
+
+      <td
+        colspan="3"
+        class="no-departures"
+      >
         Keine Abfahrten gefunden
       </td>
+
     `;
+
 
     tbody.appendChild(tr);
 
@@ -537,95 +733,68 @@ function render(){
   }
 
 
-  upcoming.forEach((bus,index) => {
+  upcoming.forEach(
+    (bus,index) => {
 
-    const tr =
-      document.createElement("tr");
-
-
-    /*
-       Highlight the very next departure.
-    */
-
-    if(index === 0){
-
-      tr.classList.add(
-        "next-departure"
-      );
-
-    }
+      const tr =
+        document.createElement("tr");
 
 
-    /*
-       If the departure is tomorrow or later,
-       show the date underneath the departure time.
-    */
+      /*
+         Highlight first upcoming bus.
+      */
 
-    let departureText =
-      bus.dep;
+      if(index === 0){
+
+        tr.classList.add(
+          "next-departure"
+        );
+
+      }
 
 
-    if(bus.dayOffset > 0){
+      /*
+         Show date when bus belongs
+         to tomorrow or a later day.
+      */
 
-      departureText += `
-        <div class="next-day">
-          ${bus.dateLabel}
-        </div>
+      let departureText =
+        bus.dep;
+
+
+      if(
+        bus.dayOffset > 0
+      ){
+
+        departureText += `
+
+          <div class="next-day">
+            ${bus.dateLabel}
+          </div>
+
+        `;
+
+      }
+
+
+      tr.innerHTML = `
+
+        <td>
+          ${departureText}
+        </td>
+
+        <td>
+          ${bus.arr}
+        </td>
+
+        <td>
+          ${bus.duration} Min
+        </td>
+
       `;
 
-    }
 
-
-    tr.innerHTML = `
-
-      <td>
-        ${departureText}
-      </td>
-
-      <td>
-        ${bus.arr}
-      </td>
-
-      <td>
-        ${bus.duration} Min
-      </td>
-
-    `;
-
-
-    tbody.appendChild(tr);
-
-  });
-
-}
-
-
-/* ======================================================
-   COLOR / SIZE CONTROLS
-   ====================================================== */
-
-const root =
-  document.documentElement.style;
-
-
-function bind(
-  id,
-  cssVar,
-  unit=""
-){
-
-  const el =
-    document.getElementById(id);
-
-
-  el.addEventListener(
-    "input",
-    () => {
-
-      root.setProperty(
-        cssVar,
-        el.value + unit
-      );
+      tbody.appendChild(tr);
 
     }
   );
@@ -633,69 +802,24 @@ function bind(
 }
 
 
-bind(
-  "ctl-bg",
-  "--bg"
-);
-
-bind(
-  "ctl-ink",
-  "--ink"
-);
-
-bind(
-  "ctl-header-bg",
-  "--header-bg"
-);
-
-bind(
-  "ctl-header-h",
-  "--header-h",
-  "px"
-);
-
-bind(
-  "ctl-fs",
-  "--fs-base",
-  "px"
-);
-
-
-/* ======================================================
-   NUMBER OF DEPARTURES
-   ====================================================== */
-
-const countControl =
-  document.getElementById(
-    "ctl-count"
-  );
-
-
-countControl.addEventListener(
-  "input",
-  () => {
-
-    numberOfDepartures =
-      Number(
-        countControl.value
-      );
-
-    render();
-
-  }
-);
-
-
-/* ======================================================
-   INITIAL DISPLAY
-   ====================================================== */
+/* =========================================================
+   START
+   ========================================================= */
 
 render();
 
 
-/* ======================================================
+/* =========================================================
    AUTOMATIC UPDATE
-   ====================================================== */
+   ========================================================= */
+
+/*
+   Check every 30 seconds.
+
+   When a bus's departure time has passed,
+   it automatically disappears and the next
+   bus moves into its place.
+*/
 
 setInterval(
   render,
