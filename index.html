@@ -8,30 +8,30 @@
 
 <style>
   :root{
-    --header-bg: #000000;
-    --header-fg: #ffffff;
-    --header-h: 60px;
+    --header-bg:#000000;
+    --header-fg:#ffffff;
+    --header-h:140px;
 
-    --bg: #ffffff;
-    --ink: #000000;
-    --line: #000000;
+    --bg:#ffffff;
+    --ink:#000000;
+    --line:#000000;
 
-    --fs-base: 24px;
+    --fs-base:18px;
   }
 
   *{
-    box-sizing: border-box;
+    box-sizing:border-box;
   }
 
   html{
-    font-size: var(--fs-base);
+    font-size:var(--fs-base);
   }
 
   body{
     margin:0;
     background:var(--bg);
     color:var(--ink);
-    font-family:Arial, Helvetica, sans-serif;
+    font-family:Arial,Helvetica,sans-serif;
     font-weight:700;
   }
 
@@ -50,7 +50,7 @@
 
   h1{
     margin:0;
-    font-size:clamp(1.4rem, 4vw, 2.2rem);
+    font-size:clamp(1.4rem,4vw,2.2rem);
     font-weight:800;
     letter-spacing:-0.01em;
   }
@@ -128,10 +128,16 @@
     border-bottom:none;
   }
 
-  /* Highlight the next departure */
+  /* First / next departure */
   tbody tr.next-departure{
     background:var(--ink);
     color:var(--bg);
+  }
+
+  /* Date shown for departures from another day */
+  .next-day{
+    font-size:.85em;
+    font-weight:700;
   }
 
   .no-departures{
@@ -151,23 +157,35 @@
 <div class="wrap">
 
   <details class="settings">
-    <summary>Linie 5 Richtung STAUFFENBERGSTR</summary>
+    <summary>Einstellungen</summary>
 
 <div class="settings-grid">
 
   <label>
     Hintergrund
-    <input type="color" id="ctl-bg" value="#ffffff">
+    <input
+      type="color"
+      id="ctl-bg"
+      value="#ffffff"
+    >
   </label>
 
   <label>
     Text
-    <input type="color" id="ctl-ink" value="#000000">
+    <input
+      type="color"
+      id="ctl-ink"
+      value="#000000"
+    >
   </label>
 
   <label>
     Kopfleiste
-    <input type="color" id="ctl-header-bg" value="#000000">
+    <input
+      type="color"
+      id="ctl-header-bg"
+      value="#000000"
+    >
   </label>
 
   <label>
@@ -225,224 +243,464 @@
 
 <script>
 
-  /* ======================================================
-     FAHRPLAN
-     Klinikum → BBZ Weimar
-     ====================================================== */
+/* ======================================================
+   FAHRPLAN
+   Klinikum → BBZ Weimar
+   ====================================================== */
 
-  const OUT = [
-    ["05:19","05:45"],
-    ["05:49","06:10"],
-    ["06:19","06:47"],
-    ["06:48","07:12"],
-    ["07:18","07:42"],
-    ["07:48","08:12"],
-    ["08:03","08:26"],
-    ["08:18","08:42"],
-    ["08:48","09:12"],
-    ["09:18","09:42"],
-    ["09:48","10:12"],
-    ["10:03","10:26"],
-    ["10:18","10:42"],
-    ["10:48","11:12"],
-    ["11:03","11:26"],
-    ["11:18","11:42"],
-    ["11:48","12:12"],
-    ["12:03","12:26"],
-    ["12:18","12:42"],
-    ["12:48","13:12"],
-    ["13:18","13:42"],
-    ["13:48","14:12"],
-    ["14:03","14:26"],
-    ["14:18","14:42"],
-    ["14:48","15:12"],
-    ["15:18","15:42"],
-    ["15:48","16:12"],
-    ["16:03","16:26"],
-    ["16:18","16:42"],
-    ["16:48","17:12"],
-    ["17:18","17:42"],
-    ["17:48","18:12"],
-    ["18:04","18:25"],
-    ["18:18","18:40"],
-    ["19:19","19:40"]
-  ];
+const OUT = [
 
+  ["05:19","05:45"],
+  ["05:49","06:10"],
+  ["06:19","06:47"],
+  ["06:48","07:12"],
 
-  /* ======================================================
-     SETTINGS
-     ====================================================== */
+  ["07:18","07:42"],
+  ["07:48","08:12"],
 
-  let numberOfDepartures = 8;
+  ["08:03","08:26"],
+  ["08:18","08:42"],
+  ["08:48","09:12"],
 
+  ["09:18","09:42"],
+  ["09:48","10:12"],
 
-  /* ======================================================
-     TIME
-     ====================================================== */
+  ["10:03","10:26"],
+  ["10:18","10:42"],
+  ["10:48","11:12"],
 
-  function getBerlinTimeInMinutes(){
+  ["11:03","11:26"],
+  ["11:18","11:42"],
+  ["11:48","12:12"],
 
-    const now = new Date();
+  ["12:03","12:26"],
+  ["12:18","12:42"],
+  ["12:48","13:12"],
 
-    const formatter = new Intl.DateTimeFormat(
-      "de-DE",
-      {
-        timeZone:"Europe/Berlin",
-        hour:"2-digit",
-        minute:"2-digit",
-        hourCycle:"h23"
-      }
-    );
+  ["13:18","13:42"],
+  ["13:48","14:12"],
 
-    const parts = formatter.formatToParts(now);
+  ["14:03","14:26"],
+  ["14:18","14:42"],
+  ["14:48","15:12"],
 
-    const hour = Number(
-      parts.find(p => p.type === "hour").value
-    );
+  ["15:18","15:42"],
+  ["15:48","16:12"],
 
-    const minute = Number(
-      parts.find(p => p.type === "minute").value
-    );
+  ["16:03","16:26"],
+  ["16:18","16:42"],
+  ["16:48","17:12"],
 
-    return hour * 60 + minute;
-  }
+  ["17:18","17:42"],
+  ["17:48","18:12"],
+
+  ["18:04","18:25"],
+  ["18:18","18:40"],
+
+  ["19:19","19:40"]
+
+];
 
 
-  function toMin(time){
+/* ======================================================
+   SETTINGS
+   ====================================================== */
 
-    const [h,m] = time.split(":").map(Number);
-
-    return h * 60 + m;
-  }
-
-
-  /* ======================================================
-     RENDER NEXT DEPARTURES
-     ====================================================== */
-
-  function render(){
-
-    const now = getBerlinTimeInMinutes();
-
-    const upcoming = OUT
-      .map(([dep,arr]) => ({
-        dep,
-        arr,
-        depMin:toMin(dep),
-        duration:toMin(arr) - toMin(dep)
-      }))
-      .filter(bus => bus.depMin >= now)
-      .slice(0, numberOfDepartures);
+let numberOfDepartures = 8;
 
 
-    const tbody = document.getElementById("table-body");
+/* ======================================================
+   CONVERT HH:MM → MINUTES
+   ====================================================== */
 
-    tbody.innerHTML = "";
+function toMin(time){
+
+  const [h,m] = time.split(":").map(Number);
+
+  return h * 60 + m;
+
+}
 
 
-    if(upcoming.length === 0){
+/* ======================================================
+   GET CURRENT EUROPE/BERLIN TIME
+   ====================================================== */
 
-      const tr = document.createElement("tr");
+function getBerlinDateTime(){
 
-      tr.innerHTML = `
-        <td colspan="3" class="no-departures">
-          Keine weiteren Abfahrten heute
-        </td>
-      `;
+  const now = new Date();
 
-      tbody.appendChild(tr);
+  const formatter = new Intl.DateTimeFormat(
+    "en-CA",
+    {
+      timeZone:"Europe/Berlin",
+      year:"numeric",
+      month:"2-digit",
+      day:"2-digit",
+      hour:"2-digit",
+      minute:"2-digit",
+      second:"2-digit",
+      hourCycle:"h23"
+    }
+  );
 
-      return;
+  const parts = formatter.formatToParts(now);
+
+  const get = type =>
+    Number(parts.find(p => p.type === type).value);
+
+  return {
+
+    year:get("year"),
+    month:get("month"),
+    day:get("day"),
+
+    hour:get("hour"),
+    minute:get("minute"),
+    second:get("second")
+
+  };
+
+}
+
+
+/* ======================================================
+   FORMAT DATE
+   ====================================================== */
+
+function formatDate(date){
+
+  return new Intl.DateTimeFormat(
+    "de-DE",
+    {
+      timeZone:"Europe/Berlin",
+      weekday:"short",
+      day:"2-digit",
+      month:"2-digit"
+    }
+  ).format(date);
+
+}
+
+
+/* ======================================================
+   GET UPCOMING DEPARTURES
+   FROM TODAY AND FOLLOWING DAYS
+   ====================================================== */
+
+function getUpcomingDepartures(){
+
+  const berlin = getBerlinDateTime();
+
+  const nowMinutes =
+    berlin.hour * 60 + berlin.minute;
+
+
+  /*
+     Create a real date representing today's date
+     in the browser environment.
+  */
+
+  const today = new Date();
+
+  /*
+     Force the displayed calendar date to the
+     Europe/Berlin date.
+  */
+
+  const todayDate = new Date(
+    berlin.year,
+    berlin.month - 1,
+    berlin.day
+  );
+
+
+  const result = [];
+
+
+  /*
+     Look through today + following days.
+
+     0 = today
+     1 = tomorrow
+     2 = day after tomorrow
+     etc.
+
+     We continue until we have enough departures.
+  */
+
+  for(let dayOffset = 0; dayOffset < 30; dayOffset++){
+
+    if(result.length >= numberOfDepartures){
+      break;
     }
 
 
-    upcoming.forEach((bus,index) => {
+    const date = new Date(todayDate);
 
-      const tr = document.createElement("tr");
+    date.setDate(
+      date.getDate() + dayOffset
+    );
 
-      if(index === 0){
-        tr.classList.add("next-departure");
+
+    const dateLabel =
+      formatDate(
+        new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          12,
+          0,
+          0
+        )
+      );
+
+
+    OUT.forEach(([dep,arr]) => {
+
+      /*
+         On TODAY only show buses that haven't
+         departed yet.
+      */
+
+      if(
+        dayOffset === 0 &&
+        toMin(dep) < nowMinutes
+      ){
+        return;
       }
 
-      tr.innerHTML = `
-        <td>${bus.dep}</td>
-        <td>${bus.arr}</td>
-        <td>${bus.duration} Min</td>
-      `;
 
-      tbody.appendChild(tr);
+      /*
+         Calculate journey time.
+      */
+
+      const duration =
+        toMin(arr) - toMin(dep);
+
+
+      result.push({
+
+        dep:dep,
+        arr:arr,
+        duration:duration,
+
+        dayOffset:dayOffset,
+        dateLabel:dateLabel
+
+      });
 
     });
 
   }
 
 
-  /* ======================================================
-     SETTINGS CONTROLS
-     ====================================================== */
+  return result.slice(
+    0,
+    numberOfDepartures
+  );
 
-  const root = document.documentElement.style;
+}
 
 
-  function bind(id,cssVar,unit=""){
+/* ======================================================
+   RENDER TABLE
+   ====================================================== */
 
-    const el = document.getElementById(id);
+function render(){
 
-    el.addEventListener("input",() => {
+  const tbody =
+    document.getElementById("table-body");
+
+  tbody.innerHTML = "";
+
+
+  const upcoming =
+    getUpcomingDepartures();
+
+
+  if(upcoming.length === 0){
+
+    const tr =
+      document.createElement("tr");
+
+    tr.innerHTML = `
+      <td colspan="3" class="no-departures">
+        Keine Abfahrten gefunden
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+
+    return;
+
+  }
+
+
+  upcoming.forEach((bus,index) => {
+
+    const tr =
+      document.createElement("tr");
+
+
+    /*
+       Highlight the very next departure.
+    */
+
+    if(index === 0){
+
+      tr.classList.add(
+        "next-departure"
+      );
+
+    }
+
+
+    /*
+       If the departure is tomorrow or later,
+       show the date underneath the departure time.
+    */
+
+    let departureText =
+      bus.dep;
+
+
+    if(bus.dayOffset > 0){
+
+      departureText += `
+        <div class="next-day">
+          ${bus.dateLabel}
+        </div>
+      `;
+
+    }
+
+
+    tr.innerHTML = `
+
+      <td>
+        ${departureText}
+      </td>
+
+      <td>
+        ${bus.arr}
+      </td>
+
+      <td>
+        ${bus.duration} Min
+      </td>
+
+    `;
+
+
+    tbody.appendChild(tr);
+
+  });
+
+}
+
+
+/* ======================================================
+   COLOR / SIZE CONTROLS
+   ====================================================== */
+
+const root =
+  document.documentElement.style;
+
+
+function bind(
+  id,
+  cssVar,
+  unit=""
+){
+
+  const el =
+    document.getElementById(id);
+
+
+  el.addEventListener(
+    "input",
+    () => {
 
       root.setProperty(
         cssVar,
         el.value + unit
       );
 
-    });
+    }
+  );
 
-  }
-
-
-  bind("ctl-bg","--bg");
-
-  bind("ctl-ink","--ink");
-
-  bind("ctl-header-bg","--header-bg");
-
-  bind("ctl-header-h","--header-h","px");
-
-  bind("ctl-fs","--fs-base","px");
+}
 
 
-  /* Number of departures */
+bind(
+  "ctl-bg",
+  "--bg"
+);
 
-  const countControl =
-    document.getElementById("ctl-count");
+bind(
+  "ctl-ink",
+  "--ink"
+);
 
-  countControl.addEventListener("input",() => {
+bind(
+  "ctl-header-bg",
+  "--header-bg"
+);
+
+bind(
+  "ctl-header-h",
+  "--header-h",
+  "px"
+);
+
+bind(
+  "ctl-fs",
+  "--fs-base",
+  "px"
+);
+
+
+/* ======================================================
+   NUMBER OF DEPARTURES
+   ====================================================== */
+
+const countControl =
+  document.getElementById(
+    "ctl-count"
+  );
+
+
+countControl.addEventListener(
+  "input",
+  () => {
 
     numberOfDepartures =
-      Number(countControl.value);
+      Number(
+        countControl.value
+      );
 
     render();
 
-  });
+  }
+);
 
 
-  /* ======================================================
-     INITIAL DISPLAY
-     ====================================================== */
+/* ======================================================
+   INITIAL DISPLAY
+   ====================================================== */
 
-  render();
+render();
 
 
-  /* ======================================================
-     UPDATE AUTOMATICALLY
-     ====================================================== */
+/* ======================================================
+   AUTOMATIC UPDATE
+   ====================================================== */
 
-  /*
-     Re-check every 30 seconds so that when the next bus
-     departs, it disappears and the next one moves up.
-  */
-
-  setInterval(render,30000);
+setInterval(
+  render,
+  30000
+);
 
 </script>
 
