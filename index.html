@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klinikum → BBZ Weimar</title>
+
+<style>
+
+/* =========================================================
+   =================== CUSTOMIZE HERE ======================
+   ========================================================= */
+
+/* ---------- COLORS ---------- */
+
+:root{
+
+  --bg-color: #FFFFFF;
+  --text-color: #000000;
+
+  --header-bg: #000000;
+  --header-text: #FFFFFF;
+
+  --table-border: #000000;
+
+  --table-header-bg: #FFFFFF;
+  --table-header-text: #000000;
+
+  --table-row-bg: #FFFFFF;
+  --table-row-text: #000000;
+
+  /* NEXT DEPARTURE */
+  --next-bg: #000000;
+  --next-text: #FFFFFF;
+
+
+  /* ---------- HEADER ---------- */
+
+  --header-height: 70px;
+  --header-text-size: 34px;
+
+
+  /* ---------- PAGE ---------- */
+
+  /* Space between header and table */
+  --space-after-header: 8px;
+
+  /* Left/right page spacing */
+  --page-padding: 20px;
+
+  /* Maximum table width */
+  --max-width: 720px;
+
+
+  /* ---------- TABLE TEXT ---------- */
+
+  /* Abfahrt / Ankunft / Fahrzeit */
+  --table-header-text-size: 20px;
+
+  /* Times and Fahrzeit */
+  --table-text-size: 24px;
+
+  /* Date underneath tomorrow's departure */
+  --next-day-text-size: 15px;
+
+
+  /* ---------- TABLE SPACING ---------- */
+
+  --table-cell-padding-top: 10px;
+  --table-cell-padding-bottom: 10px;
+
+  --table-cell-padding-left: 12px;
+  --table-cell-padding-right: 12px;
+
+
+  /* ---------- BORDERS ---------- */
+
+  --table-border-width: 2px;
+  --row-border-width: 1px;
+
+
+  /* ---------- NUMBER OF DEPARTURES ---------- */
+
+  /*
+     Change this number:
+
+     5  = next 5 buses
+     8  = next 8 buses
+     10 = next 10 buses
+     20 = next 20 buses
+  */
+
+  --number-of-departures: 8;
+
+}
+
+
+/* =========================================================
+   ================= END CUSTOMIZE HERE ====================
+   ========================================================= */
+
+
+*{
+  box-sizing:border-box;
+}
+
+html,
+body{
+  margin:0;
+  padding:0;
+}
+
+body{
+  background:var(--bg-color);
+  color:var(--text-color);
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-weight:700;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+header{
+
+  background:var(--header-bg);
+  color:var(--header-text);
+
+  height:var(--header-height);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  text-align:center;
+
+  padding:0 10px;
+}
+
+
+h1{
+
+  margin:0;
+
+  font-size:var(--header-text-size);
+
+  font-weight:800;
+
+  line-height:1.1;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+.wrap{
+
+  width:100%;
+
+  max-width:var(--max-width);
+
+  margin:0 auto;
+
+  padding-left:var(--page-padding);
+  padding-right:var(--page-padding);
+
+  padding-top:var(--space-after-header);
+
+  padding-bottom:20px;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+table{
+
+  width:100%;
+
+  border-collapse:collapse;
+
+  border:
+    var(--table-border-width)
+    solid
+    var(--table-border);
+}
+
+
+/* ---------- TABLE HEADER ---------- */
+
+thead{
+
+  background:var(--table-header-bg);
+
+  color:var(--table-header-text);
+}
+
+
+thead th{
+
+  text-align:left;
+
+  font-size:var(--table-header-text-size);
+
+  font-weight:800;
+
+  padding-top:var(--table-cell-padding-top);
+  padding-bottom:var(--table-cell-padding-bottom);
+
+  padding-left:var(--table-cell-padding-left);
+  padding-right:var(--table-cell-padding-right);
+
+  border-bottom:
+    var(--table-border-width)
+    solid
+    var(--table-border);
+}
+
+
+/* ---------- TABLE ROWS ---------- */
+
+tbody{
+
+  background:var(--table-row-bg);
+
+  color:var(--table-row-text);
+}
+
+
+tbody td{
+
+  padding-top:var(--table-cell-padding-top);
+  padding-bottom:var(--table-cell-padding-bottom);
+
+  padding-left:var(--table-cell-padding-left);
+  padding-right:var(--table-cell-padding-right);
+
+  border-bottom:
+    var(--row-border-width)
+    solid
+    var(--table-border);
+
+  font-size:var(--table-text-size);
+
+  font-weight:700;
+
+  font-variant-numeric:tabular-nums;
+}
+
+
+tbody tr:last-child td{
+  border-bottom:none;
+}
+
+
+/* =========================================================
+   NEXT DEPARTURE
+   ========================================================= */
+
+tbody tr.next-departure{
+
+  background:var(--next-bg);
+
+  color:var(--next-text);
+}
+
+
+/* =========================================================
+   FOLLOWING DAY
+   ========================================================= */
+
+.next-day{
+
+  font-size:var(--next-day-text-size);
+
+  font-weight:700;
+
+  line-height:1.1;
+}
+
+
+/* =========================================================
+   NO DEPARTURES
+   ========================================================= */
+
+.no-departures{
+
+  text-align:center;
+
+  padding:
+    var(--table-cell-padding-top)
+    var(--table-cell-padding-left)
+    var(--table-cell-padding-bottom)
+    var(--table-cell-padding-right);
+
+  font-size:var(--table-text-size);
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media(max-width:600px){
+
+  :root{
+
+    --header-text-size:28px;
+
+    --table-header-text-size:17px;
+
+    --table-text-size:20px;
+
+    --next-day-text-size:13px;
+
+    --page-padding:10px;
+
+  }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<header>
+
+  <h1>Klinikum → BBZ Weimar</h1>
+
+</header>
+
+
+<div class="wrap">
+
+  <table>
+
+    <thead>
+
+      <tr>
+        <th>Abfahrt</th>
+        <th>Ankunft</th>
+        <th>Fahrzeit</th>
+      </tr>
+
+    </thead>
+
+    <tbody id="table-body"></tbody>
+
+  </table>
+
+</div>
+
+
+<script>
+
+
+/* =========================================================
+   NUMBER OF DEPARTURES
+   ========================================================= */
+
+const NUMBER_OF_DEPARTURES = 8;
+
+
+/* =========================================================
+   MONDAY - FRIDAY
+   =========================================================
+
+   Your existing weekday timetable.
+   ========================================================= */
+
+const MONDAY_FRIDAY = [
+
+  ["05:19","05:45"],
+  ["05:49","06:10"],
+
+  ["06:19","06:47"],
+  ["06:48","07:12"],
+
+  ["07:18","07:42"],
+  ["07:48","08:12"],
+
+  ["08:03","08:26"],
+  ["08:18","08:42"],
+  ["08:48","09:12"],
+
+  ["09:18","09:42"],
+  ["09:48","10:12"],
+
+  ["10:03","10:26"],
+  ["10:18","10:42"],
+  ["10:48","11:12"],
+
+  ["11:03","11:26"],
+  ["11:18","11:42"],
+  ["11:48","12:12"],
+
+  ["12:03","12:26"],
+  ["12:18","12:42"],
+  ["12:48","13:12"],
+
+  ["13:18","13:42"],
+  ["13:48","14:12"],
+
+  ["14:03","14:26"],
+  ["14:18","14:42"],
+  ["14:48","15:12"],
+
+  ["15:18","15:42"],
+  ["15:48","16:12"],
+
+  ["16:03","16:26"],
+  ["16:18","16:42"],
+  ["16:48","17:12"],
+
+  ["17:18","17:42"],
+  ["17:48","18:12"],
+
+  ["18:04","18:25"],
+  ["18:18","18:40"],
+
+  ["19:19","19:40"]
+
+];
+
+
+/* =========================================================
+   SATURDAY
+   =========================================================
+
+   From the SWG Line 5 timetable.
+
+   Saturday departures shown in the PDF:
+   05:52
+   06:20
+   06:37
+   08:03
+   09:03
+   10:03
+   ...
+   17:03
+   18:04
+   19:19
+
+   Journey time to BBZ on the Hauptweg = 23 minutes.
+   ========================================================= */
+
+const SATURDAY_DEPARTURES = [
+
+  ["05:52","06:15"],
+
+  ["06:20","06:43"],
+  ["06:37","07:00"],
+
+  ["08:03","08:26"],
+  ["09:03","09:26"],
+  ["10:03","10:26"],
+  ["11:03","11:26"],
+  ["12:03","12:26"],
+  ["13:03","13:26"],
+  ["14:03","14:26"],
+  ["15:03","15:26"],
+  ["16:03","16:26"],
+  ["17:03","17:26"],
+
+  ["18:04","18:27"],
+
+  ["19:19","19:42"]
+
+];
+
+
+/* =========================================================
+   SUNDAY / PUBLIC HOLIDAY
+   =========================================================
+
+   IMPORTANT:
+
+   This is the Sunday / public holiday column
+   from the current SWG timetable.
+
+   There is NO 18:18 on Sunday.
+
+   Sunday evening:
+   18:04
+   19:19
+
+   Journey time to BBZ = 23 minutes.
+   ========================================================= */
+
+const SUNDAY_DEPARTURES = [
+
+  ["05:52","06:15"],
+
+  ["06:37","07:00"],
+
+  ["07:20","07:43"],
+  ["07:38","08:01"],
+
+  ["08:03","08:26"],
+
+  ["09:03","09:26"],
+  ["10:03","10:26"],
+  ["11:03","11:26"],
+  ["12:03","12:26"],
+  ["13:03","13:26"],
+  ["14:03","14:26"],
+  ["15:03","15:26"],
+  ["16:03","16:26"],
+  ["17:03","17:26"],
+
+  ["18:04","18:27"],
+
+  ["19:19","19:42"]
+
+];
+
+
+/* =========================================================
+   TIME → MINUTES
+   ========================================================= */
+
+function toMin(time){
+
+  const [h,m] =
+    time.split(":").map(Number);
+
+  return h * 60 + m;
+
+}
+
+
+/* =========================================================
+   GET CURRENT EUROPE / BERLIN TIME
+   ========================================================= */
+
+function getBerlinDateTime(){
+
+  const now = new Date();
+
+  const formatter =
+    new Intl.DateTimeFormat(
+      "en-CA",
+      {
+        timeZone:"Europe/Berlin",
+
+        year:"numeric",
+        month:"2-digit",
+        day:"2-digit",
+
+        hour:"2-digit",
+        minute:"2-digit",
+        second:"2-digit",
+
+        hourCycle:"h23"
+      }
+    );
+
+
+  const parts =
+    formatter.formatToParts(now);
+
+
+  const get = type =>
+    Number(
+      parts.find(
+        p => p.type === type
+      ).value
+    );
+
+
+  return {
+
+    year:get("year"),
+    month:get("month"),
+    day:get("day"),
+
+    hour:get("hour"),
+    minute:get("minute"),
+    second:get("second")
+
+  };
+
+}
+
+
+/* =========================================================
+   GET TIMETABLE FOR A PARTICULAR DAY
+   ========================================================= */
+
+function getTimetableForDay(date){
+
+  /*
+     JavaScript:
+
+     0 = Sunday
+     1 = Monday
+     2 = Tuesday
+     3 = Wednesday
+     4 = Thursday
+     5 = Friday
+     6 = Saturday
+  */
+
+  const day =
+    date.getDay();
+
+
+  /* Sunday */
+
+  if(day === 0){
+
+    return SUNDAY_DEPARTURES;
+
+  }
+
+
+  /* Saturday */
+
+  if(day === 6){
+
+    return SATURDAY_DEPARTURES;
+
+  }
+
+
+  /* Monday-Friday */
+
+  return MONDAY_FRIDAY;
+
+}
+
+
+/* =========================================================
+   FORMAT DATE
+   ========================================================= */
+
+function formatDate(date){
+
+  return new Intl.DateTimeFormat(
+    "de-DE",
+    {
+      timeZone:"Europe/Berlin",
+
+      weekday:"short",
+
+      day:"2-digit",
+
+      month:"2-digit"
+    }
+  ).format(date);
+
+}
+
+
+/* =========================================================
+   GET UPCOMING DEPARTURES
+   ========================================================= */
+
+function getUpcomingDepartures(){
+
+  const berlin =
+    getBerlinDateTime();
+
+
+  const nowMinutes =
+    berlin.hour * 60 +
+    berlin.minute;
+
+
+  /*
+     Today's calendar date.
+  */
+
+  const today =
+    new Date(
+      berlin.year,
+      berlin.month - 1,
+      berlin.day
+    );
+
+
+  const result = [];
+
+
+  /*
+     Look up to 30 days ahead.
+
+     This allows the page to continue into
+     tomorrow, Saturday, Sunday, etc.
+  */
+
+  for(
+    let dayOffset = 0;
+    dayOffset < 30;
+    dayOffset++
+  ){
+
+    if(
+      result.length >=
+      NUMBER_OF_DEPARTURES
+    ){
+
+      break;
+
+    }
+
+
+    const date =
+      new Date(today);
+
+
+    date.setDate(
+      date.getDate() +
+      dayOffset
+    );
+
+
+    const timetable =
+      getTimetableForDay(date);
+
+
+    const dateLabel =
+      formatDate(date);
+
+
+    timetable.forEach(
+      ([dep,arr]) => {
+
+
+        /*
+           TODAY:
+
+           Remove buses that have already departed.
+        */
+
+        if(
+          dayOffset === 0 &&
+          toMin(dep) < nowMinutes
+        ){
+
+          return;
+
+        }
+
+
+        /*
+           Calculate actual journey time
+           from the timetable values.
+        */
+
+        const duration =
+          toMin(arr) -
+          toMin(dep);
+
+
+        result.push({
+
+          dep:dep,
+
+          arr:arr,
+
+          duration:duration,
+
+          dayOffset:dayOffset,
+
+          dateLabel:dateLabel
+
+        });
+
+      }
+    );
+
+  }
+
+
+  return result.slice(
+    0,
+    NUMBER_OF_DEPARTURES
+  );
+
+}
+
+
+/* =========================================================
+   RENDER TABLE
+   ========================================================= */
+
+function render(){
+
+  const tbody =
+    document.getElementById(
+      "table-body"
+    );
+
+
+  tbody.innerHTML = "";
+
+
+  const upcoming =
+    getUpcomingDepartures();
+
+
+  if(
+    upcoming.length === 0
+  ){
+
+    const tr =
+      document.createElement("tr");
+
+
+    tr.innerHTML = `
+
+      <td
+        colspan="3"
+        class="no-departures"
+      >
+        Keine Abfahrten gefunden
+      </td>
+
+    `;
+
+
+    tbody.appendChild(tr);
+
+    return;
+
+  }
+
+
+  upcoming.forEach(
+    (bus,index) => {
+
+      const tr =
+        document.createElement("tr");
+
+
+      /*
+         Highlight the next departure.
+      */
+
+      if(index === 0){
+
+        tr.classList.add(
+          "next-departure"
+        );
+
+      }
+
+
+      /*
+         Show date for tomorrow /
+         later days.
+      */
+
+      let departureText =
+        bus.dep;
+
+
+      if(
+        bus.dayOffset > 0
+      ){
+
+        departureText += `
+
+          <div class="next-day">
+            ${bus.dateLabel}
+          </div>
+
+        `;
+
+      }
+
+
+      tr.innerHTML = `
+
+        <td>
+          ${departureText}
+        </td>
+
+        <td>
+          ${bus.arr}
+        </td>
+
+        <td>
+          ${bus.duration} Min
+        </td>
+
+      `;
+
+
+      tbody.appendChild(tr);
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+render();
+
+
+/* =========================================================
+   UPDATE EVERY 30 SECONDS
+   ========================================================= */
+
+setInterval(
+  render,
+  30000
+);
+
+</script>
+
+</body>
+</html>
